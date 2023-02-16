@@ -11,6 +11,12 @@ class MULTIPLAYER_PINPONG_API APingPongPlayerPawn : public APawn
 {
 	GENERATED_BODY()
 
+protected:
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	class USpringArmComponent * SpringArm;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	class UCameraComponent * Camera;
+
 public:
 	// Sets default values for this pawn's properties
 	APingPongPlayerPawn();
