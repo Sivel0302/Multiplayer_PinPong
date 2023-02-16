@@ -13,5 +13,9 @@ UCLASS()
 class MULTIPLAYER_PINPONG_API APingPongPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
+public:
+	void SetStartTransfrorm(FTransform transform);
+	void Initialize();
 	
 };

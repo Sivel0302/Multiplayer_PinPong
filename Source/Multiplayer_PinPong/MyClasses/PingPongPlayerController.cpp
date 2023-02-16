@@ -3,3 +3,13 @@
 
 #include "PingPongPlayerController.h"
 
+
+void APingPongPlayerController::SetStartTransfrorm(FTransform transform)
+{
+	
+}
+
+void APingPongPlayerController::Initialize()
+{
+	
+}
