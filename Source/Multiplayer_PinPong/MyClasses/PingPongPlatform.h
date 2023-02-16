@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "PingPongPlatform.generated.h"
 
@@ -10,6 +11,15 @@ UCLASS()
 class MULTIPLAYER_PINPONG_API APingPongPlatform : public AActor
 {
 	GENERATED_BODY()
+
+protected:
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+    UBoxComponent * BodyCollision;
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+    UStaticMeshComponent* BodyMesh;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float MoveSpeed = 100;
+
 	
 public:	
 	// Sets default values for this actor's properties
@@ -23,6 +33,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void Server_MoveRight(float AxisValue);
+	UFUNCTION(Server, Reliable, WithValidation)
+    void Server_MoveRight(float AxisValue);
+
 
 };
