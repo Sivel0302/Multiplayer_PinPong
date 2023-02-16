@@ -25,3 +25,8 @@ void APingPongPlatform::Tick(float DeltaTime)
 
 }
 
+void APingPongPlatform::Server_MoveRight(float AxisValue)
+{
+	
+}
+
