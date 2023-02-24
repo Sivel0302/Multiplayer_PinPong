@@ -37,6 +37,7 @@ void APingPongBall::BeginPlay()
 	Super::BeginPlay();
 
 	BodyMesh->SetStaticMesh(LoadBodyMesh());
+	BodyMesh->SetMaterial(0, LoadMaterial());
 	
 }
 
@@ -119,6 +120,27 @@ UStaticMesh* APingPongBall::LoadBodyMesh()
     }
     return BodyMeshRef.Get();
 
+	/*UStaticMesh* Mesh = LoadObject<UStaticMesh>(NULL,
+		TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"), NULL, LOAD_None, NULL);
+    return Mesh;*/
+
+
+}
+
+UMaterialInterface* APingPongBall::LoadMaterial()
+{
+	if (MaterialRef.IsPending())
+	{
+		const FSoftObjectPath& AssetRef = MaterialRef.ToStringReference();
+		FStreamableManager& StreamableManager = UAssetManager::Get().GetStreamableManager();
+		MaterialRef = Cast<
+		UMaterialInterface>(StreamableManager.LoadSynchronous(AssetRef));
+	}
+	return MaterialRef.Get();
+	
+	/*UMaterialInterface* Material = LoadObject<UMaterialInstance>(NULL,
+		TEXT("/DatasmithContent/Materials/FBXImporter/DeltaGenMaster.DeltaGenMaster"), NULL, LOAD_None, NULL);
+	return Material;*/
 }
 
 // Called every frame

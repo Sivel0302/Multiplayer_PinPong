@@ -20,6 +20,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
     TSoftObjectPtr<UStaticMesh> BodyMeshRef;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TSoftObjectPtr<UMaterialInterface> MaterialRef;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
 	float MoveSpeed = 100;
@@ -46,6 +48,7 @@ protected:
 	void Multicast_HitEffect();
 
 	UStaticMesh* LoadBodyMesh();
+	UMaterialInterface* LoadMaterial();
 
 public:	
 	// Called every frame
