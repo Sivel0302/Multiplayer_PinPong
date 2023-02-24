@@ -4,6 +4,8 @@
 #include "PingPongBall.h"
 
 #include "DrawDebugHelpers.h"
+#include "Engine/AssetManager.h"
+#include "Engine/StreamableManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
@@ -21,6 +23,11 @@ APingPongBall::APingPongBall()
 	BodyMesh->SetIsReplicated(true);
 	SetReplicates(true);
 	SetReplicateMovement(true);
+	
+	/*static ConstructorHelpers::FObjectFinder<UStaticMesh>
+		LoadedBallMeshObj(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"));
+	BodyMesh->SetStaticMesh(LoadedBallMeshObj.Object);*/
+	
 
 }
 
@@ -28,6 +35,8 @@ APingPongBall::APingPongBall()
 void APingPongBall::BeginPlay()
 {
 	Super::BeginPlay();
+
+	BodyMesh->SetStaticMesh(LoadBodyMesh());
 	
 }
 
@@ -96,6 +105,19 @@ void APingPongBall::Multicast_HitEffect_Implementation()
     {
 	    UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect, GetActorLocation());
     }
+
+}
+
+UStaticMesh* APingPongBall::LoadBodyMesh()
+{
+	if (BodyMeshRef.IsPending())
+    {
+	    const FSoftObjectPath& AssetRef = BodyMeshRef.ToStringReference();
+	    FStreamableManager& StreamableManager = UAssetManager::Get().GetStreamableManager();
+	    BodyMeshRef = Cast<
+	    UStaticMesh>(StreamableManager.LoadSynchronous(AssetRef));
+    }
+    return BodyMeshRef.Get();
 
 }
 

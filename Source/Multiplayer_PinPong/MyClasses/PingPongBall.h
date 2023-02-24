@@ -17,6 +17,10 @@ protected:
 	USphereComponent* BodyCollision;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* BodyMesh;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+    TSoftObjectPtr<UStaticMesh> BodyMeshRef;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
 	float MoveSpeed = 100;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
@@ -40,6 +44,8 @@ protected:
 	void Server_StopMove();
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multicast_HitEffect();
+
+	UStaticMesh* LoadBodyMesh();
 
 public:	
 	// Called every frame
