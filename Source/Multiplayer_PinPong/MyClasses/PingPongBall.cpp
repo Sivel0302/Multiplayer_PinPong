@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
+#include "Particles/ParticleSystem.h"
 
 // Sets default values
 APingPongBall::APingPongBall()
@@ -36,8 +37,10 @@ void APingPongBall::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BodyMesh->SetStaticMesh(LoadBodyMesh());
-	BodyMesh->SetMaterial(0, LoadMaterial());
+	/*BodyMesh->SetStaticMesh(LoadBodyMesh());
+	BodyMesh->SetMaterial(0, LoadMaterial());*/
+	LoadBodyMesh();
+	LoadEffect();
 	
 }
 
@@ -109,7 +112,7 @@ void APingPongBall::Multicast_HitEffect_Implementation()
 
 }
 
-UStaticMesh* APingPongBall::LoadBodyMesh()
+/*UStaticMesh* APingPongBall::LoadBodyMesh()
 {
 	if (BodyMeshRef.IsPending())
     {
@@ -122,10 +125,8 @@ UStaticMesh* APingPongBall::LoadBodyMesh()
 
 	/*UStaticMesh* Mesh = LoadObject<UStaticMesh>(NULL,
 		TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"), NULL, LOAD_None, NULL);
-    return Mesh;*/
-
-
-}
+    return Mesh;#1#
+}*/
 
 UMaterialInterface* APingPongBall::LoadMaterial()
 {
@@ -141,6 +142,44 @@ UMaterialInterface* APingPongBall::LoadMaterial()
 	/*UMaterialInterface* Material = LoadObject<UMaterialInstance>(NULL,
 		TEXT("/DatasmithContent/Materials/FBXImporter/DeltaGenMaster.DeltaGenMaster"), NULL, LOAD_None, NULL);
 	return Material;*/
+}
+
+void APingPongBall::LoadBodyMesh()
+{
+	FStreamableDelegate LoadMeshDelegate;
+	LoadMeshDelegate.BindUObject(this, &APingPongBall::OnBodyMeshLoaded);
+	UAssetManager& assetManager = UAssetManager::Get();
+	FStreamableManager& streamableManager = assetManager.GetStreamableManager();
+	AssetHandle = streamableManager.RequestAsyncLoad(BodyMeshRef.ToStringReference(), LoadMeshDelegate);
+}
+
+void APingPongBall::OnBodyMeshLoaded()
+{
+	UStaticMesh * loadedMesh = Cast<UStaticMesh>(AssetHandle.Get()->GetLoadedAsset());
+    if(loadedMesh)
+    {
+		BodyMesh->SetStaticMesh(loadedMesh);
+    }
+
+}
+
+void APingPongBall::LoadEffect()
+{
+	FStreamableDelegate LoadEffectDelegate;
+	LoadEffectDelegate.BindUObject(this, &APingPongBall::OnEffectLoaded);
+	UAssetManager& assetManager = UAssetManager::Get();
+	FStreamableManager& streamableManager = assetManager.GetStreamableManager();
+	AssetHandle = streamableManager.RequestAsyncLoad(EffectRef.ToStringReference(), LoadEffectDelegate);
+}
+
+void APingPongBall::OnEffectLoaded()
+{
+	UParticleSystem * loadedEffect = Cast<UParticleSystem>(AssetHandle.Get()->GetLoadedAsset());
+	if(loadedEffect)
+	{
+		//BodyMesh->SetStaticMesh(loadedMesh);
+		HitEffect = loadedEffect;
+	}
 }
 
 // Called every frame

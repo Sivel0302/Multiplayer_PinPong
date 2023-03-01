@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SphereComponent.h"
+#include "Engine/StreamableManager.h"
 #include "GameFramework/Actor.h"
 #include "PingPongBall.generated.h"
 
@@ -22,7 +23,13 @@ protected:
     TSoftObjectPtr<UStaticMesh> BodyMeshRef;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TSoftObjectPtr<UMaterialInterface> MaterialRef;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TSoftObjectPtr<UParticleSystem> EffectRef;
 
+	TSharedPtr<FStreamableHandle> AssetHandle;
+	TSharedPtr<FStreamableHandle> EffectHandle;
+	
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
 	float MoveSpeed = 100;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
@@ -47,8 +54,17 @@ protected:
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multicast_HitEffect();
 
-	UStaticMesh* LoadBodyMesh();
+	//UStaticMesh* LoadBodyMesh();
 	UMaterialInterface* LoadMaterial();
+	
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void LoadBodyMesh();
+	void OnBodyMeshLoaded();
+	
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void LoadEffect();
+	void OnEffectLoaded();
+
 
 public:	
 	// Called every frame
